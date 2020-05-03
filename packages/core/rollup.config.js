@@ -18,7 +18,8 @@ const createNpmConfig = ({ input, output }) => ({
   input,
   output,
   preserveModules: true,
-  plugins: [createTsPlugin()]
+  plugins: [createTsPlugin()],
+  external: ['uuid', 'debug']
 });
 
 const createUmdConfig = ({ input, output, target = undefined }) => ({
@@ -33,7 +34,8 @@ const createUmdConfig = ({ input, output, target = undefined }) => ({
       toplevel: true
     }),
     fileSize()
-  ]
+  ],
+  external: ['uuid', 'debug']
 });
 
 export default [

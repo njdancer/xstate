@@ -10,7 +10,8 @@ export interface Actor<
   TEvent extends EventObject = AnyEventObject
 > extends Subscribable<TContext> {
   id: string;
-  send: (event: TEvent) => any; // TODO: change to void
+  send: (event: TEvent) => Promise<any>; // TODO: change to void
+  receive?: (event: TEvent) => Promise<void>;
   stop?: () => any | undefined;
   toJSON: () => {
     id: string;
@@ -22,7 +23,7 @@ export interface Actor<
 export function createNullActor(id: string): Actor {
   return {
     id,
-    send: () => void 0,
+    send: async () => void 0,
     subscribe: () => ({
       unsubscribe: () => void 0
     }),

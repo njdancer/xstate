@@ -8,7 +8,7 @@ const defaultOptions: SchedulerOptions = {
 
 export class Scheduler {
   private processingEvent: boolean = false;
-  private queue: Array<() => void> = [];
+  private queue: Array<() => Promise<void>> = [];
   private initialized = false;
 
   // deferred feature
@@ -18,22 +18,22 @@ export class Scheduler {
     this.options = { ...defaultOptions, ...options };
   }
 
-  public initialize(callback?: () => void): void {
+  public async initialize(callback?: () => Promise<void>): Promise<void> {
     this.initialized = true;
 
     if (callback) {
       if (!this.options.deferEvents) {
-        this.schedule(callback);
+        await this.schedule(callback);
         return;
       }
 
-      this.process(callback);
+      await this.process(callback);
     }
 
-    this.flushEvents();
+    await this.flushEvents();
   }
 
-  public schedule(task: () => void): void {
+  public async schedule(task: () => Promise<void>): Promise<void> {
     if (!this.initialized || this.processingEvent) {
       this.queue.push(task);
       return;
@@ -45,26 +45,26 @@ export class Scheduler {
       );
     }
 
-    this.process(task);
-    this.flushEvents();
+    await this.process(task);
+    await this.flushEvents();
   }
 
   public clear(): void {
     this.queue = [];
   }
 
-  private flushEvents() {
-    let nextCallback: (() => void) | undefined = this.queue.shift();
+  private async flushEvents() {
+    let nextCallback: (() => Promise<void>) | undefined = this.queue.shift();
     while (nextCallback) {
-      this.process(nextCallback);
+      await this.process(nextCallback);
       nextCallback = this.queue.shift();
     }
   }
 
-  private process(callback: () => void) {
+  private async process(callback: () => Promise<void>) {
     this.processingEvent = true;
     try {
-      callback();
+      await callback();
     } catch (e) {
       // there is no use to keep the future events
       // as the situation is not anymore the same

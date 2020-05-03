@@ -15,6 +15,7 @@ export interface EventObject {
    * The type of event that is sent.
    */
   type: string;
+  _logEntryId?: string;
 }
 
 export interface AnyEventObject extends EventObject {
@@ -1170,3 +1171,19 @@ export type Spawnable =
   | Promise<any>
   | InvokeCallback
   | Subscribable<any>;
+
+export interface EventStore {
+  writeEvent: (id: string, channel: string, event: EventObject) => Promise<any>;
+  addListener: (
+    channel: string,
+    listener: (event: any) => Promise<void>
+  ) => Promise<void>;
+  removeListener: (channel: string, listener: (event: any) => void) => void;
+  removeListeners: (channel: string) => Promise<void>;
+}
+
+export interface EventInFlight {
+  event: EventObject;
+  resolve: () => void;
+  reject: () => void;
+}
