@@ -245,7 +245,9 @@ export class Interpreter<
     if (!IS_PRODUCTION) {
       warn(
         this._status !== InterpreterStatus.NotStarted,
-        `Attempted to read state from uninitialized service '${this.id}'. Make sure the service is started first.`
+        `Attempted to read state from uninitialized service '${
+          this.id
+        }'. Make sure the service is started first.`
       );
     }
 
@@ -595,7 +597,7 @@ export class Interpreter<
     }
 
     this.debug(`Writing ${logEntryId} to ${this.id}`);
-    await this.eventStore.writeEvent(logEntryId, this.id, eventObject);
+    this.eventStore.writeEvent(logEntryId, this.id, eventObject);
 
     this.debug(`Awaiting receipt of ${logEntryId}`);
     await new Promise(async (resolve, reject) => {
@@ -710,7 +712,9 @@ export class Interpreter<
       if (!IS_PRODUCTION) {
         warn(
           false,
-          `Service '${this.id}' has no parent: unable to send event ${event.type}`
+          `Service '${this.id}' has no parent: unable to send event ${
+            event.type
+          }`
         );
       }
       return;
@@ -762,7 +766,9 @@ export class Interpreter<
 
       if (!child) {
         throw new Error(
-          `Unable to forward event '${event}' from interpreter '${this.id}' to nonexistant child '${id}'.`
+          `Unable to forward event '${event}' from interpreter '${
+            this.id
+          }' to nonexistant child '${id}'.`
         );
       }
 
@@ -866,7 +872,9 @@ export class Interpreter<
             warn(
               !('forward' in activity),
               // tslint:disable-next-line:max-line-length
-              `\`forward\` property is deprecated (found in invocation of '${activity.src}' in in machine '${this.machine.id}'). ` +
+              `\`forward\` property is deprecated (found in invocation of '${
+                activity.src
+              }' in in machine '${this.machine.id}'). ` +
                 `Please use \`autoForward\` instead.`
             );
           }
@@ -881,7 +889,9 @@ export class Interpreter<
             if (!IS_PRODUCTION) {
               warn(
                 false,
-                `No service found for invocation '${activity.src}' in machine '${this.machine.id}'.`
+                `No service found for invocation '${
+                  activity.src
+                }' in machine '${this.machine.id}'.`
               );
             }
             return;
