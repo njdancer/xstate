@@ -106,7 +106,7 @@ export type ExtractStateValue<
   : {
       [K in keyof TSS]?:
         | (TSS[K] extends { states: any } ? keyof TSS[K]['states'] : never)
-        | ExtractStateValue<TSS[K]>;
+        | ExtractStateValue<TSS[K]>
     };
 
 export interface HistoryValue {
@@ -295,7 +295,7 @@ export type StateNodesConfig<
     TContext,
     TStateSchema['states'][K],
     TEvent
-  >;
+  >
 };
 
 export type StatesConfig<
@@ -307,7 +307,7 @@ export type StatesConfig<
     TContext,
     TStateSchema['states'][K],
     TEvent
-  >;
+  >
 };
 
 export type StatesDefinition<
@@ -319,7 +319,7 @@ export type StatesDefinition<
     TContext,
     TStateSchema['states'][K],
     TEvent
-  >;
+  >
 };
 
 export type TransitionConfigTarget<TContext, TEvent extends EventObject> =
@@ -338,7 +338,7 @@ type TransitionsConfigMap<TContext, TEvent extends EventObject> = {
   [K in TEvent['type']]?: TransitionConfigOrTarget<
     TContext,
     TEvent extends { type: K } ? TEvent : never
-  >;
+  >
 } & {
   ''?: TransitionConfigOrTarget<TContext, TEvent>;
 } & {
@@ -352,7 +352,7 @@ type TransitionsConfigArray<TContext, TEvent extends EventObject> = Array<
         TEvent extends { type: K } ? TEvent : never
       > & {
         event: K;
-      };
+      }
     }[TEvent['type']]
   | (TransitionConfig<TContext, TEvent> & { event: '' })
   | (TransitionConfig<TContext, TEvent> & { event: '*' })
@@ -878,7 +878,7 @@ export type PropertyAssigner<TContext, TEvent extends EventObject> = {
         event: TEvent,
         meta: AssignMeta<TContext, TEvent>
       ) => TContext[K])
-    | TContext[K];
+    | TContext[K]
 };
 
 export type Mapper<TContext, TEvent extends EventObject> = (
@@ -939,7 +939,7 @@ export type TransitionDefinitionMap<TContext, TEvent extends EventObject> = {
       TContext,
       K extends TEvent['type'] ? Extract<TEvent, { type: K }> : EventObject
     >
-  >;
+  >
 };
 
 export interface DelayedTransitionDefinition<
@@ -1173,12 +1173,13 @@ export type Spawnable =
   | Subscribable<any>;
 
 export interface EventStore {
-  writeEvent: (id: string, channel: string, event: EventObject) => Promise<any>;
+  writeEvent: (id: string, channel: string, event: any) => Promise<any>;
   addListener: (
     channel: string,
     listener: (event: any) => Promise<void>
   ) => Promise<void>;
   removeListener: (channel: string, listener: (event: any) => void) => void;
+  loadEvents: (channel: string) => any[];
   removeListeners: (channel: string) => Promise<void>;
 }
 
